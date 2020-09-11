@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Untitled</title>
+    <link rel="stylesheet" href={% static "assets/bootstrap/css/bootstrap.min.css" %}>
+    <link rel="stylesheet" href={% static "assets/fonts/font-awesome.min.css" %}>
+</head>
+
+<body class="text-secondary" style="width: 100%;height: 100%;">
+    <div class="text-center"><i class="fa fa-gamepad" style="font-size: 80px;"></i>
+        <div style="margin: 5%;width: 90%;height: 95%;filter: blur(0px);"><strong style="color: rgb(17,143,255);">ساخت گروه</strong>
+            <div style="padding: 1%;">
+                <form style="width: 100%;height: 100%;">
+                    <div style="padding-bottom: 3%;"><input class="form-control" type="text" style="margin: 0;" name="group-name" placeholder="اسم گروه"></div>
+                    <div style="padding-bottom: 7%;">
+                        <div class="dropdown d-flex justify-content-center"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">انتخاب بازی</button>
+                            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
+                        </div>
+                    </div>
+                    <div><button class="btn btn-primary" type="button">ایجاد گروه</button></div>
+                </form>
+            </div>
+        </div>
+        <div><strong style="color: rgb(235,14,0);">عضو شدن در گروه ها&nbsp;</strong>
+            <div class="row">
+                <div class="col">
+                    <div>
+                        <div class="card" style="margin: 6%;">
+                            <div class="card-body rounded" style="background-color: #ffbe76;">
+                                <h4 class="card-title" style="color: rgb(251,251,251);">اسم گروه : HASAN</h4>
+                                <h6 class="text-muted card-subtitle mb-2">نام بازی : نقطه و خط</h6>
+                                <h6 class="text-muted card-subtitle mb-2">ظرفیت باقی مانده : 1 عدد</h6><button class="btn btn-primary" type="button">عضو شدن در گروه</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src={% static "assets/js/jquery.min.js" %}></script>
+    <script src={% static "assets/bootstrap/js/bootstrap.min.js" %}></script>
+</body>
+
+</html>
