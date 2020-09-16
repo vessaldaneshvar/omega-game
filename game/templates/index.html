@@ -78,10 +78,15 @@
         groups_socket.onmessage = function (e) {
             console.log(e)
             data_group = JSON.parse(e.data)
-            if (data_group["message_type"] == "create_group") {
+            if (data_group["message_type"] == "broadcast_newgroup") {
                 create_card_join(data_group)
             }
+            else if (data_group["message_type"] == "ready_groups"){
+                console.log(data_group)
+                start_game(data_group["slug"])
+            }
         }
+
         function joingroup_button(group_name) {
             console.log(group_name)
             join_group_items = document.getElementById('div_join_group').getElementsByTagName("Button")
@@ -89,18 +94,12 @@
                 join_group_items[index].disabled = true;
 
             }
-            join_socket = new WebSocket(
-                "ws://" + window.location.host + "/game/joingroup/" + group_name + "/"
-            )
-            join_socket.onmessage = function (e) {
-                json_data = JSON.parse(e.data)
-                if (json_data["message_type"] == "ready_groups"){
-                    console.log(json_data)
-                    start_game(json_data["slug"])
-                }
-                console.log(e)
-            }
+            join_group_data = {
+                "message_type" : "join_group",
+                "group_name" : group_name,
 
+            }
+            groups_socket.send(JSON.stringify(join_group_data))
         }
 
         function create_card_join(group_game_data) {
@@ -125,26 +124,13 @@
             group_name = document.getElementById("group-name").value
             game_object = document.getElementById('game-id')
             game_name = game_object[game_object.selectedIndex].text
-            create_group = new WebSocket(
-                "ws://" + window.location.host + "/game/creategroup/" + group_name + '/'
-            )
-
-            create_group.onopen = function (e) {
-                console.log(e)
-                start_game_data = {
-                    "game_name": game_name
-                }
-                create_group.send(JSON.stringify(start_game_data))
+            
+            start_game_data = {
+                "message_type" : "create_group",
+                "group_name" : group_name,
+                "game_name": game_name,
             }
-
-            create_group.onmessage = function(e) {
-                json_data = JSON.parse(e.data)
-                if (json_data["message_type"] == "ready_groups"){
-                    console.log(json_data)
-                    start_game(json_data["slug"])
-                }
-                console.log(e)
-            }
+            groups_socket.send(JSON.stringify(start_game_data))
         }
         function start_game(slug) {
             window.open(slug,"_self")

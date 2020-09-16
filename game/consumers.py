@@ -4,56 +4,6 @@ import json
 from .models import Game , Group
 import secrets
 
-class creategroup(WebsocketConsumer):
-    def connect(self):
-        self.group_name = self.scope['url_route']['kwargs']['groupname']
-        if self.group_name in self.channel_layer.groups.keys():
-            self.close()
-        else:
-            async_to_sync(self.channel_layer.group_add)(
-                self.group_name,
-                self.channel_name
-            )
-            self.accept()
-
-    def receive(self,text_data):
-        # TODO: calculate capacity from db
-        json_data = json.loads(text_data)
-        self.game_name = json_data["game_name"]
-        game_object = Game.objects.get(name=self.game_name)
-        self.group_model_data = Group.objects.create(group_name=self.group_name,game = game_object,active="AW")
-        async_to_sync(self.channel_layer.group_send)(
-            "all",
-            {
-                "type" : "broadcast_create_group",
-                "message_type" : "create_group",
-                "group_name" : self.group_name,
-                "game_name" : self.game_name
-            }
-        )
-        
-    
-    def disconnect(self,close_code):
-        self.group_model_data.active = "RJ"
-        self.group_model_data.save()
-        async_to_sync(self.channel_layer.group_discard)(
-            self.group_name,
-            self.channel_name,
-        )
-        
-        self.close()
-
-    def ready_groups(self,event):
-        self.group_model_data.active = "DG"
-        self.group_model_data.private_address = event["slug_game"]
-        self.group_model_data.save()
-        self.send(json.dumps({
-            "message_type":"ready_groups",
-            "slug" : f'game/{event["slug_game"]}'
-
-        }))
-
-
 class groups(WebsocketConsumer):
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -63,7 +13,13 @@ class groups(WebsocketConsumer):
         self.accept()
 
     def receive(self,text_data):
-        pass
+        json_data = json.loads(text_data)
+        message_type = json_data["message_type"]
+        '''Check Type Of Message Received'''
+        if message_type == "create_group":
+            self.create_group(json_data)
+        elif message_type == "join_group":
+            self.join_group(json_data)
 
     
     def disconnect(self,close_code):
@@ -71,7 +27,18 @@ class groups(WebsocketConsumer):
             'all',
             self.channel_name,
         )
-        
+        if hasattr(self,'creator'): 
+            self.group_model_data.active = "RJ"
+            self.group_model_data.save()
+            async_to_sync(self.channel_layer.group_discard)(
+            self.group_name_created,
+            self.channel_name,
+            )
+        if hasattr(self,'joined'):
+            async_to_sync(self.channel_layer.group_discard)(
+            self.group_name_joined,
+            self.channel_name,
+            )
         self.close()
 
     def broadcast_create_group(self,event):
@@ -85,36 +52,50 @@ class groups(WebsocketConsumer):
             )
         )
 
+    def create_group(self,json_data):
+        self.creator = True
+        self.group_name_created = json_data["group_name"]
+        # TODO : Check Not Exist Group Name 
+        self.game_name = json_data["game_name"]
+        game_object = Game.objects.get(name=self.game_name)
+        self.group_model_data = Group.objects.create(group_name=self.group_name_created,game = game_object,active="AW")
 
-class join_group(WebsocketConsumer):
-    def connect(self):
-        self.group_name = self.scope['url_route']['kwargs']['groupname']
-        if self.group_name in self.channel_layer.groups.keys():
-            self.accept()
-            async_to_sync(self.channel_layer.group_add)(
-                self.group_name,
+        async_to_sync(self.channel_layer.group_add)(
+        self.group_name_created,
+        self.channel_name
+        )
+        async_to_sync(self.channel_layer.group_send)(
+            "all",
+            {
+                "type" : "broadcast_create_group",
+                "message_type" : "broadcast_newgroup",
+                "group_name" : self.group_name_created,
+                "game_name" : self.game_name
+            }
+        )
+
+    def join_group(self,json_data):
+        self.joined = True
+        self.group_name_joined = json_data["group_name"]
+        # TODO : Condition for not accept over capacity in group
+        async_to_sync(self.channel_layer.group_add)(
+                self.group_name_joined,
                 self.channel_name
             )
-            async_to_sync(self.channel_layer.group_send)(
-                self.group_name,
+        # TODO : Condition For Joined == capacity
+        async_to_sync(self.channel_layer.group_send)(
+                self.group_name_joined,
                 {
                     "type" : "ready_groups",
                     "slug_game" : secrets.token_urlsafe()
                 }
             )
 
-        else:
-            self.close()
-
-    def disconnect(self,close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.group_name,
-            self.channel_name,
-        )
-        self.close()
-
-
     def ready_groups(self,event):
+        if hasattr(self,'creator'):
+            self.group_model_data.active = "DG"
+            self.group_model_data.private_address = event["slug_game"]
+            self.group_model_data.save()
         self.send(json.dumps({
             "message_type":"ready_groups",
             "slug" : f"game/{event['slug_game']}"
