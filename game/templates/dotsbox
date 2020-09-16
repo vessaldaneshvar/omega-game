@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<html lang="fa">
+<meta charset="utf-8">
+<meta name="author" content="Wannes Meert">
+<meta name="description"
+	content="Dots-and-Boxes game">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>بازی نقطه و خط</title>
+<link rel="stylesheet" href= {% static 'dotsbox/bootstrap.min.css' %} crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'dotsbox/dotsandboxes.css' %}">
+</head>
+
+<body>
+	<div class="container">
+		<h1>نقطه و خط</h1>
+		<div class="row">
+			<div class="col-md">
+				<div id="playing-area"></div>
+			</div>
+			<div class="col-md">
+				<div class="form-group">
+					<p>Size of game:</p>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text">Rows and Columns</span>
+						</div>
+						<input type="number" class="form-control" id="nb-rows" value=4 min=1>
+						<input type="number" class="form-control" id="nb-cols" value=4 min=1>
+					</div>
+				</div>
+				<div class="form-group">
+					<p hidden>Time limit:</p>
+					<div class="input-group" hidden>
+						<div class="input-group-prepend">
+							<span class="input-group-text">Timelimit</span>
+						</div>
+						<input type="number" class="form-control" id="timelimit" value=0.5 step=0.5 min=0>
+					</div>
+				</div>
+				<div class="form-group">
+					<p>Players:</p>
+					<div class="input-group mb-3" hidden>
+						<div class="input-group-prepend"><span class="input-group-text" id="basic-addon3">Agent 1</span>
+						</div>
+						<input type="text" class="form-control" id="agent1" aria-describedby="basic-addon3">
+					</div>
+					<div class="input-group mb-3" hidden>
+						<div class="input-group-prepend"><span class="input-group-text" id="basic-addon3">Agent 2</span>
+						</div>
+						<input type="text" class="form-control" id="agent2" aria-describedby="basic-addon3">
+					</div>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend"><span class="input-group-text" id="basic-addon3">Group
+								Name</span>
+						</div>
+						<input type="text" class="form-control" id="groupname" aria-describedby="basic-addon3">
+					</div>
+					<p>Fill in the address where an agent can be reached using WebSockets (e.g. ws://127.0.0.1:8089).
+						If a field is empty a human player is assumed.
+					</p>
+					<button type="button" class="btn btn-secondary" id="restart-btn">Start game</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="{% static 'dotsbox/d3.v4.min.js' %}"></script>
+	<script src="{% static 'dotsbox/dotsandboxes.js' %}"></script>
+	<script>
+		restart()
+	</script>
+</body>
+
+</html>
