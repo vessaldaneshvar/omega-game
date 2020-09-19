@@ -1,7 +1,8 @@
 from channels.generic.websocket import WebsocketConsumer
+from django.core.exceptions import ObjectDoesNotExist
 from asgiref.sync import async_to_sync
 import json
-from .models import Game , Group
+from .models import Game , Group , Participant , Score
 import secrets
 
 class groups(WebsocketConsumer):
@@ -105,6 +106,13 @@ class groups(WebsocketConsumer):
 class game_function(WebsocketConsumer):
     def connect(self):
         self.token_group = self.scope["url_route"]["kwargs"]["token_group"]
+        self.group_object = Group.objects.get(private_address=self.token_group)
+        participantobjects = Participant.objects.filter(group=self.group_object)
+        if len(participantobjects) >= self.group_object.game.capacity:
+            self.close()    
+            return
+        self.userid = len(participantobjects)
+        self.participant = Participant.objects.create(group=self.group_object,channel_name=self.channel_name,index=self.userid)
         self.accept()
         async_to_sync(self.channel_layer.group_add)(
             self.token_group,
@@ -114,7 +122,7 @@ class game_function(WebsocketConsumer):
     
     def receive(self,text_data):
         json_data = json.loads(text_data)
-
+        print(text_data)
         """Send Message To all Client Of Group"""
         if json_data["message_type"] == "echo_all":
             async_to_sync(self.channel_layer.group_send)(
@@ -122,13 +130,23 @@ class game_function(WebsocketConsumer):
                 {"type" : "echo_all" , "data":json_data}
             )
 
-        elif (json_data["message_type"] == "echo_user") and (json_data.get("user",None)):
+        elif (json_data["message_type"] == "echo_other"):
             # TODO : Get Number User And Send data To User
+            async_to_sync(self.channel_layer.group_send)(
+                self.token_group,
+                {"type" : "echo_other" , "channel_name" : self.channel_name,"data":json_data}
+            )
+
+        elif json_data["message_type"] == "new_token":
             pass
+            # TODO :: NEW GAME
 
-        elif json_data["message_type"] == "finish":
-            self.disconnect(1005)
-
+        elif (json_data["message_type"] == "save_score") and (json_data.get("winner",None)):
+            if json_data["winner"] == "me":
+                result = "S"
+            elif json_data["winner"] == "competitor":
+                result = "F"
+            Score.objects.create(group=self.group_object,user=self.participant,result=result)
 
     def disconnect(self,close_code):
         self.close()
@@ -139,8 +157,12 @@ class game_function(WebsocketConsumer):
 
 
     def send_user_number(self):
-        print(self.channel_layer.groups)
+        self.send(json.dumps({"action":"start_game","userid":self.userid}))
         
 
     def echo_all(self,event):
-        self.send(json.loads(event["data"]))
+        self.send(json.dumps(event["data"]))
+
+    def echo_other(self,event):
+        if self.channel_name != event["channel_name"]:
+            self.send(json.dumps(event["data"]))
