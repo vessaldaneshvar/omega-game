@@ -26,4 +26,4 @@ def GameView(request,token):
         game_object = group_object.game.template
     except ObjectDoesNotExist:
         return HttpResponseNotFound()
-    return render(request,game_object)
+    return render(request,game_object+".html")
