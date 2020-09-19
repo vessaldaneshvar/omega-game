@@ -18,7 +18,7 @@
 </head>
 
 <body class="text-secondary" style="width: 100%;height: 100%;">
-    <div class="text-center"><i class="fa fa-gamepad" style="font-size: 80px;"></i>
+        <div class="text-center"><i class="fa fa-gamepad" style="font-size: 80px;"></i>
         <div style="margin: 5%;width: 90%;height: 95%;filter: blur(0px);"><strong style="color: rgb(17,143,255);">ساخت
                 گروه</strong>
             <div style="padding: 1%;">
@@ -58,12 +58,14 @@
                 </div>
             </div>
             {% empty %}
-            No Group
+            <div class="button">
+                No Group
+            </div>
             {% endfor %}
 
-            <div class="spinner-border text-primary" id="spinner" role="status">
+            <!-- <div class="spinner-border text-primary" id="spinner" role="status">
                 <span class="sr-only">Loading...</span>
-            </div>
+            </div> -->
 
 
 
