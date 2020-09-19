@@ -26,9 +26,18 @@ class Group(models.Model):
     def __str__(self):
         return self.group_name
     
-# class Score(models.Model):
+
+class Participant(models.Model):
+    group = models.ForeignKey(Group,on_delete=models.CASCADE,verbose_name="گروه")
+    channel_name = models.CharField(max_length=40)
+    index = models.IntegerField(null=True)
+    # TODO: ADD USER OBJECT FOREIGNKEY
+
+
+class Score(models.Model):
+    group = models.ForeignKey(Group,on_delete=models.CASCADE)
+    user = models.ForeignKey(Participant,on_delete=models.CASCADE)
+    result = models.CharField(max_length=1,choices=[("S","SUCCESS"),("F","FAILURE")])
 
 
 
-
-# TODO: CREATE MODEL FOR PARTICIPANT ::AFTER :: NO USER MODEL
