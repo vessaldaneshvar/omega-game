@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 
 class Game(models.Model):
@@ -21,6 +20,7 @@ class Group(models.Model):
         max_length=2,
         choices=[("AW","AWAITING"),("DG","DOING"),("DN","DONE"),("RJ","REJECT")]
     )
+    password = models.CharField(max_length=40,verbose_name="رمزعبور")
     private_address = models.SlugField(null=True,unique=True)
 
     def __str__(self):

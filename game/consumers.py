@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 import json
 from .models import Game , Group , Participant , Score
 import secrets
+from hashlib import sha1
 
 class groups(WebsocketConsumer):
     def connect(self):
@@ -32,12 +33,12 @@ class groups(WebsocketConsumer):
             self.group_model_data.active = "RJ"
             self.group_model_data.save()
             async_to_sync(self.channel_layer.group_discard)(
-            self.group_name_created,
+            self.group_name_created_sha1,
             self.channel_name,
             )
         if hasattr(self,'joined'):
             async_to_sync(self.channel_layer.group_discard)(
-            self.group_name_joined,
+            self.group_name_joined_sha1,
             self.channel_name,
             )
         self.close()
@@ -54,15 +55,21 @@ class groups(WebsocketConsumer):
         )
 
     def create_group(self,json_data):
+        try:
+            Group.objects.get(group_name=json_data["group_name"],active="AW")
+            return self.same_group_name()
+        except ObjectDoesNotExist:
+            pass
+
         self.creator = True
         self.group_name_created = json_data["group_name"]
-        # TODO : Check Not Exist Group Name 
+        self.group_name_created_sha1 = sha1(json_data["group_name"].encode()).hexdigest()
         self.game_name = json_data["game_name"]
         game_object = Game.objects.get(name=self.game_name)
-        self.group_model_data = Group.objects.create(group_name=self.group_name_created,game = game_object,active="AW")
+        self.group_model_data = Group.objects.create(group_name=self.group_name_created,game = game_object,active="AW",password=json_data["game_password"])
 
         async_to_sync(self.channel_layer.group_add)(
-        self.group_name_created,
+        self.group_name_created_sha1,
         self.channel_name
         )
         async_to_sync(self.channel_layer.group_send)(
@@ -75,17 +82,32 @@ class groups(WebsocketConsumer):
             }
         )
 
+    def same_group_name(self):
+        self.send(json.dumps({
+            "message_type" : "same_group_name"
+        }))
+
+    def incorrect_password(self):
+        self.send(json.dumps({
+            "message_type" : "incorrect_password"
+        }))
+
     def join_group(self,json_data):
+        try:
+            Group.objects.get(group_name=json_data["group_name"],password=json_data["game_password"],active="AW")
+        except ObjectDoesNotExist:
+            return self.incorrect_password()
         self.joined = True
         self.group_name_joined = json_data["group_name"]
+        self.group_name_joined_sha1 = sha1(json_data["group_name"].encode()).hexdigest()
         # TODO : Condition for not accept over capacity in group
         async_to_sync(self.channel_layer.group_add)(
-                self.group_name_joined,
+                self.group_name_joined_sha1,
                 self.channel_name
             )
-        # TODO : Condition For Joined == capacity
+        # TODO : Condition For JoinedCount == capacity
         async_to_sync(self.channel_layer.group_send)(
-                self.group_name_joined,
+                self.group_name_joined_sha1,
                 {
                     "type" : "ready_groups",
                     "slug_game" : secrets.token_urlsafe()
