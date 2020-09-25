@@ -56,7 +56,7 @@
             border-radius: 15px;
             padding: 7px;
             margin: auto;
-            max-width: 70%;
+            max-width: 80%;
             text-align: center;
             
         }
@@ -75,11 +75,7 @@
         }
         p#turn {
             font-weight: bold;
-            font-size: 40px;
-        }
-
-        #player-show {
-            color: red;
+            font-size: 25px;
         }
     </style>
 </head>
@@ -88,7 +84,7 @@
     <!-- <img src={% static "images/tic_tac_toe.png" %} alt="xo logo" style="max-width: 72px;"> -->
     <div class="status">
         <div class="status2">
-            <p id="turn">شما : <strong id="player-show"></strong></p>
+            <p id="turn">شما : <strong id="player-show"> ... </strong></p>
             <p id="score-me" >امتیاز من : <strong id="score-m">0</strong></p>
             <p id="score-competitor" >امتیاز حریف : <strong id="score-c">0</strong></p>
             <p id="rounds" >راند : <strong id="round">1</strong> از 15</p>
@@ -96,9 +92,15 @@
     </div>
     <div id="rockpaper">
         <div class="game--container">
-            <div data-cell-index="R" class="cell">سنگ</div>
-            <div data-cell-index="P" class="cell">کاغذ</div>
-            <div data-cell-index="S" class="cell">قیچی</div>
+            <div data-cell-index="R" class="cell">
+                <img src="{% static 'rockpaper/hand-rock.png' %}" alt="rock" style="max-height: 70px;" data-cell-index="R">
+            </div>
+            <div data-cell-index="P" class="cell">
+                <img src="{% static 'rockpaper/hand-paper.png' %}" alt="paper" style="max-height: 70px;" data-cell-index="P">
+            </div>
+            <div data-cell-index="S" class="cell">
+                <img src="{% static 'rockpaper/hand-scissor.png' %}" alt="scissor" style="max-height: 70px;" data-cell-index="S">
+            </div>
         </div>
     </div>
 

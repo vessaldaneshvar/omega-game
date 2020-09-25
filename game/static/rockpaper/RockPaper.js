@@ -9,6 +9,15 @@ let UserIndex;
 let gameActive = true;
 let gameState = ["",""];
 
+Players_Arg = {
+    0 : {
+        "color" : "red"
+    } , 
+    1 : {
+        "color" : "blue"
+    }
+}
+
 const conErrorMessage = () => `ارتباط با سرور برقرار نشد.
 به صفحه ایجاد گروه بازگردید و مجددا گروه تشکیل دهید.`
 const winningMessage = () => `شما برنده شده اید.`;
@@ -38,6 +47,7 @@ function message_handler(json_data){
             UserPlayer = "بازیکن دوم"
             UserIndex = 1
         }
+        player_show.style.color = Players_Arg[UserIndex]["color"];
         player_show.innerText = UserPlayer
         document.querySelectorAll('.cell').forEach(cell => cell.addEventListener('click', handleCellClick));
     }
@@ -50,7 +60,7 @@ function message_handler(json_data){
 
 function handleCellPlayed(clickedCell, clickedCellIndex) {
     gameActive = false
-    clickedCell.style.color = "red";
+    clickedCell.style.color = Players_Arg[UserIndex]["color"];
     gameState[UserIndex] = clickedCellIndex
 }
 
@@ -94,6 +104,7 @@ function handleResultValidation() {
         score_c_int = parseInt(score_c.innerText)
         score_c.innerText = score_c_int + 1
     }
+
 
     changeActiveGame()
     handleRestartGame()
