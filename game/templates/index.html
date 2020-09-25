@@ -15,6 +15,9 @@
             direction: rtl;
             background-color: #f0eded;
         }
+        div .row {
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -72,7 +75,7 @@
                             <h4 class="card-title" style="color: rgb(251,251,251);">اسم گروه : {{group.group_name}}</h4>
                             <h6 class="text-muted card-subtitle mb-2">نام بازی : {{group.game}}</h6>
                             <h6 class="text-muted card-subtitle mb-2">ظرفیت باقی مانده : 1 عدد</h6>
-                            <input class="form-control mb-2" type="text" style="margin: 0;" id="group-pass-join"
+                            <input class="form-control mb-2" type="text" id="group-pass-join"
                                 placeholder="رمز گروه">
                             <button class="btn btn-primary" type="button"
                                 onclick="joingroup_button(event,'{{group.group_name}}');">عضو شدن در گروه</button>
