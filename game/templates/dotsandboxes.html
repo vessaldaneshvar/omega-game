@@ -1,0 +1,93 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی نقطه و خط | Dots And Boxes</title>
+    <style>
+        @import url('https://cdn.fontcdn.ir/Font/Persian/Sahel/Sahel.css');
+        body {
+            background-color: #522745;
+            text-align: center;
+            font-family: Sahel;
+            
+        }
+
+        section {
+            text-align: center;
+        }
+
+        .text {
+            width: 40%;
+            margin: 0 auto;
+            background-color: #ffffff73;
+            border: #2980b9 solid 1px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+       
+
+        .img-head {
+            max-width: 20%;
+        }
+
+        .status {
+            background-color: #dbac43;
+            border-radius: 15px;
+            padding: 7px;
+            margin: auto;
+            max-width: 80%;
+            text-align: center;
+            
+        }
+
+        .status2 {
+            background-color: #dbac43;
+            border: 10px solid #744e2a;
+            border-radius: 15px;
+            padding: 15px 5px 15px 5px;
+            
+        }
+
+        p {
+            direction: rtl;
+            margin: 0;
+        }
+        p#turn {
+            font-weight: bold;
+            font-size: 25px;
+        }
+
+        g.row:last-child rect{
+            opacity: 0;
+        }
+        g.col:last-child rect {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="status">
+        <div class="status2">
+            <p id="turn">شما : <strong id="player-show"> ... </strong></p>
+            <p id="score-me" >امتیاز من : <strong id="score-m">0</strong></p>
+            <p id="score-competitor" >امتیاز حریف : <strong id="score-c">0</strong></p>
+        </div>
+    </div>
+    <div id="dotsandboxes">
+        
+    </div>
+
+    <div class="status">
+        <div class="status2">
+            <p id="status">در حال اتصال به سرور ... </p>
+        </div>
+    </div>
+    <script src={% static 'dotsbox/d3.v4.min.js' %}></script>
+    <script src={% static 'dotsbox/dotsandbox.js' %}></script>
+    <script src={% static 'game_socket.js' %}></script>
+</body>
+
+</html>

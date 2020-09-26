@@ -1,27 +1,5 @@
-/**
- * dotsandboxes.js
- *
- * Template for the Machine Learning Project course at KU Leuven (2017-2018)
- * of Hendrik Blockeel and Wannes Meert.
- *
- * Copyright (c) 2018 KU Leuven. All rights reserved.
- **/
 
-function generateGuid() {
-  var result, i, j;
-  result = '';
-  for(j=0; j<32; j++) {
-    if( j == 8 || j == 12|| j == 16|| j == 20) 
-      result = result + '-';
-    i = Math.floor(Math.random()*16).toString(16).toUpperCase();
-    result = result + i;
-  }
-  return result;
-}
 
-// GAME LOGIC
-
-var cur_game = generateGuid();
 var cur_player = 1;
 var cur_ended = false;
 var points = [0, 0, 0];
