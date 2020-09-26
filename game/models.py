@@ -37,7 +37,7 @@ class Participant(models.Model):
 class Score(models.Model):
     group = models.ForeignKey(Group,on_delete=models.CASCADE)
     user = models.ForeignKey(Participant,on_delete=models.CASCADE)
-    result = models.CharField(max_length=1,choices=[("S","SUCCESS"),("F","FAILURE")])
+    result = models.CharField(max_length=1,choices=[("S","SUCCESS"),("F","FAILURE"),("D","DRAW")])
 
 
 

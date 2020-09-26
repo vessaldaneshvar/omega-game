@@ -168,6 +168,8 @@ class game_function(WebsocketConsumer):
                 result = "S"
             elif json_data["winner"] == "competitor":
                 result = "F"
+            elif json_data["winner"] == "draw":
+                result = "D"
             Score.objects.create(group=self.group_object,user=self.participant,result=result)
 
     def disconnect(self,close_code):
