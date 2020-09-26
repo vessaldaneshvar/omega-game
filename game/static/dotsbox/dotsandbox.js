@@ -8,14 +8,14 @@ const conErrorMessage = () => `ارتباط با سرور برقرار نشد.
 
 let UserPlayer = ""
 let UserIndex;
-let Cur_player;
+let Cur_player = 1;
 let gameActive = true;
 let gameState = ["", ""];
 
 var player_color = [
-    "#522745",
-    "#FC6666",
-    "#0F80FF"
+    "#e1e1e1",
+    "#27ae60",
+    "#9b59b6"
 ];
 
 var nb_cols = 7;
@@ -88,7 +88,7 @@ function update_board() {
         .attr("class", "cell")
         .attr("rx", cell_margin)
         .attr("ry", cell_margin)
-        .attr("opacity", 0.35)
+        .attr("opacity", 0.85)
         .attr("x", cell_margin)
         .attr("y", cell_margin)
         .attr("width", cell_width - 2 * cell_margin)
@@ -113,7 +113,7 @@ function update_board() {
         .attr("stroke-width", 2)
         .attr("opacity", "0")
         .on("click", function (cell) {
-            if (agents[Cur_player].active == true) {
+            if (agents[UserIndex].active == true) {
                 console.log("Ignoring click, automated agent")
             } else {
                 user_click(cell, "h");
@@ -139,7 +139,7 @@ function update_board() {
         .attr("stroke-width", 2)
         .attr("opacity", "0")
         .on("click", function (cell) {
-            if (agents[Cur_player].active == true) {
+            if (agents[UserIndex].active == true) {
                 console.log("Ignoring click, automated agent");
             } else {
                 user_click(cell, "v");
@@ -177,6 +177,9 @@ function update_board() {
             }
             return player_color[cell.p];
         });
+
+    score_m.innerText = points[UserIndex]
+    score_c.innerText = points[3 - UserIndex]
 }
 
 function startgame() {
@@ -230,21 +233,20 @@ function message_handler(json_data) {
         statusDisplay.innerHTML = "بازی شروع شد. نوبت بازیکن اول می باشد."
         if (json_data["userid"] == 0) {
             UserPlayer = "بازیکن اول"
-            Cur_player = 1
+            UserIndex = 1
             agents[Cur_player].active = false
         }
         else if (json_data["userid"] == 1) {
             UserPlayer = "بازیکن دوم"
-            Cur_player = 2
+            UserIndex = 2
         }
-        player_show.style.color = player_color[Cur_player];
+        player_show.style.color = player_color[UserIndex];
         player_show.innerText = UserPlayer
         startgame()
         update_board()
     }
     else if (json_data["action"] == "cell_click") {
         user_click(data[json_data.location[0]][json_data.location[1]],json_data["orientation"],true)
-        agents[Cur_player].active = false
     }
 }
 
@@ -324,12 +326,24 @@ function user_click(cell, o, otheruser) {
         cur_ended = true;
     }
     update_board();
-    agents[Cur_player].active = true
-    Cur_player = 3 - Cur_player
-    if (otheruser){
+    if (otheruser == undefined){
+        cell_click_send_message(r,c,o)
+    }
+    if (cur_ended) {
+        save_score()
+    }
+    if (won_cell){
         return;
     }
-    cell_click_send_message(r,c,o)
+    agents[Cur_player].active = true
+    Cur_player = 3 - Cur_player
+    agents[Cur_player].active = false
+    if (agents[UserIndex].active == false){
+        statusDisplay.innerText = "نوبت شما می باشد. لطفا یک خط خالی انتخاب کنید."
+        return;
+    }
+    statusDisplay.innerText = "نوبت حریف می باشد . منتظر بمانید."
+
 }
 
 function cell_click_send_message(r,c,o) {
@@ -342,4 +356,23 @@ function cell_click_send_message(r,c,o) {
 
     }
     game_socket_connection.send(JSON.stringify(message_data))
+}
+
+
+function save_score(){
+    if (winner == 0) {
+        winner = "draw"
+    }
+    else if (winner == UserIndex) {
+        winner = "me"
+    }
+    else {
+        winner = "competitor"
+    }
+    score_data = {
+        "message_type" : "save_score",
+        "winner" : winner
+    }
+    game_socket_connection.send(JSON.stringify(score_data))
+    window.open("/" , "_self")
 }
