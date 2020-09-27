@@ -13,14 +13,32 @@ groups_socket.onmessage = function (e) {
     }
     else if (data_group["message_type"] == "incorrect_password") {
         console.log(data_group)
-        alert("wrong password")
+        alert("رمز عبور اشتباه می باشد.")
         window.location.reload()
     }
     else if (data_group["message_type"] == "same_group_name") {
         console.log(data_group)
-        alert("Group Name Is Duplicate; Enter New Group Name")
+        alert("نام گروه تکراری است. نام جدیدی انتخاب کنید.")
         window.location.reload()
     }
+    else if (data_group["message_type"] == "broadcast_deletegroup") {
+        delete_card(data_group["group_name"])
+    }
+}
+
+function delete_card(groupname){
+    del_group_att = document.getElementsByName(groupname)[0]
+    del_group_att.remove()
+}
+
+function delete_group(event) {
+    console.log(event)
+    delete_group_data = {
+        "message_type": "delete_group",
+        "group_name": group_name,
+        "game_password": game_password
+    }
+    groups_socket.send(JSON.stringify(delete_group_data))
 }
 
 function joingroup_button(e, group_name) {
@@ -46,6 +64,7 @@ function joingroup_button(e, group_name) {
 function create_card_join(group_game_data) {
     card_element = document.createElement("DIV")
     card_element.className = "row"
+    card_element.setAttribute('name',group_game_data['group_name'])
     card_element.innerHTML = `<div class="col">
                     <div class="card" style="margin: 6%;">
                         <div class="card-body rounded" style="background-color: #e74c3c;">
@@ -68,7 +87,10 @@ function creategroup() {
     game_object = document.getElementById('game-id')
     game_name = game_object[game_object.selectedIndex].text
     game_password = document.getElementById("group-pass").value
-
+    if (group_name == "" || game_password == "") {
+        alert("اسم گروه و رمز آن را به دقت وارد کنید.")
+        return;
+    }
     start_game_data = {
         "message_type": "create_group",
         "group_name": group_name,
@@ -76,6 +98,10 @@ function creategroup() {
         "game_password": game_password
     }
     groups_socket.send(JSON.stringify(start_game_data))
+    $('#modal_awaiting_join_member').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
 }
 function start_game(slug) {
     window.open(slug, "_self")

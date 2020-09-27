@@ -22,6 +22,8 @@ class groups(WebsocketConsumer):
             self.create_group(json_data)
         elif message_type == "join_group":
             self.join_group(json_data)
+        elif message_type == "delete_group" : 
+            self.delete_group(json_data)
 
     
     def disconnect(self,close_code):
@@ -53,6 +55,39 @@ class groups(WebsocketConsumer):
                 }
             )
         )
+
+    def delete_group(self,json_data):
+        try:
+            group_model = Group.objects.get(group_name=json_data["group_name"],password=json_data["game_password"],active="AW")
+        except ObjectDoesNotExist:
+            return self
+        delattr(self,"creator")
+        delattr(self,"group_name_created")
+        delattr(self,"game_name")
+        group_model.active = "RJ"
+        group_model.save()
+
+        async_to_sync(self.channel_layer.group_discard)(
+            self.group_name_created_sha1,
+            self.channel_name,
+            )
+        
+        delattr(self,"group_name_created_sha1")
+        
+        async_to_sync(self.channel_layer.group_send)(
+            "all",
+            {
+                "type" : "broadcast_delete_group",
+                "message_type" : "broadcast_deletegroup",
+                "group_name" : json_data["group_name"]
+            }
+        )
+
+    def broadcast_delete_group(self,event):
+        self.send(json.dumps({
+            "message_type" : event["message_type"],
+            "group_name" : event["group_name"],
+        }))
 
     def create_group(self,json_data):
         try:
