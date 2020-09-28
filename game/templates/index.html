@@ -22,8 +22,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 50%"
-                            aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">50%</div>
+                        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 50%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">50%</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -34,63 +33,76 @@
     </div>
 
 
-    <div class="text-center"><i class="fa fa-gamepad" style="font-size: 80px;"></i>
-        <div style="margin: 5%;width: 90%;height: 95%;filter: blur(0px);"><strong style="color: rgb(17,143,255);">ساخت
-                گروه</strong>
-            <div style="padding: 1%;">
-                <form method="GET" action="#" onsubmit="return false;">
-                    <div style="padding-bottom: 2%;"><label for="group-name">اسم گروه :</label>
-                        <input class="form-control" type="text" style="margin: 0;" name="group-name" id="group-name"
-                            placeholder="اسم گروه">
-                    </div>
-                    <div style="padding-bottom: 2%;"><label for="group-pass">رمز گروه :</label>
-                        <input class="form-control" type="text" style="margin: 0;" name="group-pass" id="group-pass"
-                            placeholder="رمز گروه">
-                    </div>
-                    <div style="padding-bottom: 4%;">
-                        <label for="game-id">انتخاب بازی : </label>
-                        <select class="form-control" name="game-select" id="game-id">
-                            <optgroup label="انتخاب بازی">
-                                {% for game in games %}
-                                <option value="{{game.name}}">{{game.name}}</option>
-                                {% empty %}
-                                <option value="no-game">No Game</option>
-                                {% endfor %}
-                            </optgroup>
-                        </select></div>
-                    <div><button class="btn btn-primary" type="button" onclick="creategroup();">ایجاد گروه</button>
-                    </div>
-                </form>
+    <div class="text-center"><i class="fa fa-gamepad mb-3" style="font-size: 80px;"></i>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-link active" id="nav-selfgame-tab" data-toggle="tab" href="#nav-selfgame" role="tab" aria-controls="nav-selfgame" aria-selected="true">بازی انفرادی</a>
+                <a class="nav-link" id="nav-creategroup-tab" data-toggle="tab" href="#nav-creategroup" role="tab" aria-controls="nav-creategroup" aria-selected="false">ساخت گروه</a>
+                <a class="nav-link" id="nav-joingroup-tab" data-toggle="tab" href="#nav-joingroup" role="tab" aria-controls="nav-joingroup" aria-selected="false">عضو شدن</a>
             </div>
-        </div>
-        <div id='div_join_group'><strong style="color: rgb(235,14,0);">عضو شدن در گروه ها&nbsp;</strong>
-            {% for group in groups %}
-            <div class="row" name={{group.group_name}}>
-                <div class="col">
-                    <div class="card" style="margin: 6%;">
-                        <div class="card-body rounded" style="background-color: #ffbe76;">
-                            <h4 class="card-title" style="color: rgb(251,251,251);">اسم گروه : {{group.group_name}}</h4>
-                            <h6 class="text-muted card-subtitle mb-2">نام بازی : {{group.game}}</h6>
-                            <h6 class="text-muted card-subtitle mb-2">ظرفیت باقی مانده : 1 عدد</h6>
-                            <input class="form-control mb-2" type="text" id="group-pass-join" placeholder="رمز گروه">
-                            <button class="btn btn-primary" type="button"
-                                onclick="joingroup_button(event,'{{group.group_name}}');">عضو شدن در گروه</button>
-                        </div>
+        </nav>
+
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade active show" id="nav-selfgame" role="tabpanel" aria-labelledby="nav-selfgame-tab">
+
+            </div>
+            <div class="tab-pane fade" id="nav-creategroup" role="tabpanel" aria-labelledby="nav-creategroup-tab">
+                <div style="margin: 5%;width: 90%;height: 95%;filter: blur(0px);"><strong style="color: rgb(17,143,255);">ساخت
+                    گروه</strong>
+                    <div style="padding: 1%;">
+                        <form method="GET" action="#" onsubmit="return false;">
+                            <div style="padding-bottom: 2%;"><label for="group-name">اسم گروه :</label>
+                                <input class="form-control" type="text" style="margin: 0;" name="group-name" id="group-name" placeholder="اسم گروه">
+                            </div>
+                            <div style="padding-bottom: 2%;"><label for="group-pass">رمز گروه :</label>
+                                <input class="form-control" type="text" style="margin: 0;" name="group-pass" id="group-pass" placeholder="رمز گروه">
+                            </div>
+                            <div style="padding-bottom: 4%;">
+                                <label for="game-id">انتخاب بازی : </label>
+                                <select class="form-control" name="game-select" id="game-id">
+                                <optgroup label="انتخاب بازی">
+                                    {% for game in games %}
+                                    <option value="{{game.name}}">{{game.name}}</option>
+                                    {% empty %}
+                                    <option value="no-game">No Game</option>
+                                    {% endfor %}
+                                </optgroup>
+                            </select></div>
+                            <div><button class="btn btn-primary" type="button" onclick="creategroup();">ایجاد گروه</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="button">
-                No Group
+            <div class="tab-pane fade" id="nav-joingroup" role="tabpanel" aria-labelledby="nav-joingroup-tab">
+                <div id='div_join_group' class="mt-4"><strong style="color: rgb(235,14,0);">عضو شدن در گروه ها&nbsp;</strong> {% for group in groups %}
+                    <div class="row" name={{group.group_name}}>
+                        <div class="col">
+                            <div class="card" style="margin: 6%;">
+                                <div class="card-body rounded" style="background-color: #ffbe76;">
+                                    <h4 class="card-title" style="color: rgb(251,251,251);">اسم گروه : {{group.group_name}}</h4>
+                                    <h6 class="text-muted card-subtitle mb-2">نام بازی : {{group.game}}</h6>
+                                    <h6 class="text-muted card-subtitle mb-2">ظرفیت باقی مانده : 1 عدد</h6>
+                                    <input class="form-control mb-2" type="text" id="group-pass-join" placeholder="رمز گروه">
+                                    <button class="btn btn-primary" type="button" onclick="joingroup_button(event,'{{group.group_name}}');">عضو شدن در گروه</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="button">
+                        No Group
+                    </div>
+                    {% endfor %}
+
+                    <!-- <div class="spinner-border text-primary" id="spinner" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div> -->
+
+
+
+                </div>
             </div>
-            {% endfor %}
-
-            <!-- <div class="spinner-border text-primary" id="spinner" role="status">
-                <span class="sr-only">Loading...</span>
-            </div> -->
-
-
-
         </div>
     </div>
     <script src={% static "assets/js/jquery.min.js" %}></script>
