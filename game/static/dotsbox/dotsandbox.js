@@ -330,7 +330,7 @@ function user_click(cell, o, otheruser) {
         cell_click_send_message(r,c,o)
     }
     if (cur_ended) {
-        save_score()
+        save_score(winner)
     }
     if (won_cell){
         return;
@@ -359,7 +359,7 @@ function cell_click_send_message(r,c,o) {
 }
 
 
-function save_score(){
+function save_score(winner){
     if (winner == 0) {
         winner = "draw"
     }
