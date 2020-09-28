@@ -1,0 +1,8 @@
+body {
+    direction: rtl;
+    background-color: #f0eded;
+}
+
+div .row {
+    margin: 0;
+}

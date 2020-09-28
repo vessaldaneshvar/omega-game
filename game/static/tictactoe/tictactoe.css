@@ -1,0 +1,75 @@
+@import url('https://cdn.fontcdn.ir/Font/Persian/Sahel/Sahel.css');
+body {
+    background-color: #522745;
+    text-align: center;
+    font-family: Sahel;
+}
+
+section {
+    text-align: center;
+}
+
+.game--container {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    width: 306px;
+    margin: 20px auto;
+}
+
+.text {
+    width: 40%;
+    margin: 0 auto;
+    background-color: #ffffff73;
+    border: #2980b9 solid 1px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    font-family: "Permanent Marker", cursive;
+    width: 80px;
+    height: 80px;
+    box-shadow: 0 0 0 1px #333333;
+    border: 1px solid #333333;
+    cursor: pointer;
+    border-radius: 5%;
+    line-height: 80px;
+    font-size: 60px;
+    padding: 0;
+    margin: 10px;
+    background-color: #dbac43;
+}
+
+.img-head {
+    max-width: 20%;
+}
+
+.status {
+    background-color: #dbac43;
+    border-radius: 15px;
+    padding: 7px;
+    margin: auto;
+    max-width: 70%;
+    text-align: center;
+}
+
+.status2 {
+    background-color: #dbac43;
+    border: 10px solid #744e2a;
+    border-radius: 15px;
+    padding: 15px 5px 15px 5px;
+}
+
+p {
+    direction: rtl;
+    margin: 0;
+}
+
+p#turn {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+#player-show {
+    color: red;
+}
