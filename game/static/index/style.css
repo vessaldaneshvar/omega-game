@@ -6,3 +6,14 @@ body {
 div .row {
     margin: 0;
 }
+
+.game--container {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    width: 306px;
+    margin: 20px auto;
+}
+
+strong.single-game {
+    color: rgb(255, 60, 11);
+}

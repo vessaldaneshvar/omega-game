@@ -40,4 +40,7 @@ class Score(models.Model):
     result = models.CharField(max_length=1,choices=[("S","SUCCESS"),("F","FAILURE"),("D","DRAW")])
 
 
-
+class singleGame(models.Model):
+    name = models.CharField(max_length=40,verbose_name="نام بازی")
+    score = models.IntegerField(verbose_name="امتیاز بازی")
+    slug = models.SlugField()

@@ -16,6 +16,7 @@ class LandingView(TemplateView):
         # context['groups'] = game_model.Group.objects.all()
         context['groups'] = game_model.Group.objects.filter(active="AW").order_by('-created_at')
         context['games'] = game_model.Game.objects.all()
+        context['single_game'] = game_model.singleGame.objects.all()
         return context
 
 
