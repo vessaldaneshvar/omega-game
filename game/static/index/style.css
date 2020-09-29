@@ -1,6 +1,12 @@
+@font-face {
+    font-family: "Sahel";
+    src: url("/static/assets/fonts/Sahel.ttf");
+}
+
 body {
     direction: rtl;
     background-color: #f0eded;
+    font-family: "Sahel";
 }
 
 div .row {

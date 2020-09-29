@@ -7,11 +7,14 @@
 
 -- run redis server
 
--- pip install requirements.txt
+-- install requirements package
 
 -- python3 manage.py runserver
 
+-- migrate models
+
 -- add games to database
+
 
 
 
